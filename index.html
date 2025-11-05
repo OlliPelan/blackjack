@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
-<title>Blackjack Game 1.0 Mobile Safe Area</title>
+<title>Blackjack Game 1.0 Sounds Fixed</title>
 <style>
   * {
     margin: 0;
@@ -25,7 +25,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-bottom: env(safe-area-inset-bottom);
   }
 
   .game-container {
@@ -39,8 +38,7 @@
     max-height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
-    padding-bottom: env(safe-area-inset-bottom);
+    overflow: hidden;
   }
 
   h1 {
@@ -49,34 +47,35 @@
     text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
     margin-bottom: 10px;
     font-size: clamp(1.2em, 5vw, 2em);
+    flex-shrink: 0;
   }
 
-  .info-panel {
-    display: flex;
-    justify-content: space-around;
-    margin: 15px 0;
-    font-size: clamp(1em, 4vw, 1.3em);
-  }
-
-  .info-item {
+  .message {
     text-align: center;
-  }
-
-  .info-label {
+    font-size: clamp(0.9em, 3.5vw, 1.2em);
     color: #ffd700;
-    font-size: 0.7em;
+    margin: 10px 0;
+    min-height: 30px;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    flex-shrink: 0;
   }
 
-  .info-value {
-    font-weight: bold;
-    font-size: 1.2em;
+  .cards-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    overflow: hidden;
+    min-height: 0;
+    padding: 10px 0;
   }
 
   .cards-container {
     display: flex;
     justify-content: center;
     gap: 5px;
-    margin: 15px 0;
     flex-wrap: nowrap;
     padding: 0 5px;
   }
@@ -90,7 +89,8 @@
 
   .card, .card-back {
     width: 90px !important;
-    aspect-ratio: 5 / 7;
+    height: 180px !important;
+    max-height: 180px !important;
     border-radius: 8px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     cursor: pointer;
@@ -117,20 +117,20 @@
   }
 
   .card-value {
-    font-size: 1.8em;
+    font-size: 1.6em;
     font-weight: bold;
     line-height: 0.9;
   }
 
   .card-suit {
-    font-size: 2.8em;
+    font-size: 2.5em;
     text-align: center;
     margin: auto 0;
     line-height: 1;
   }
 
   .card-value-bottom {
-    font-size: 1.8em;
+    font-size: 1.6em;
     font-weight: bold;
     text-align: right;
     line-height: 0.9;
@@ -162,14 +162,30 @@
     opacity: 0.6;
   }
 
-  .message {
+  .bottom-ui {
+    flex-shrink: 0;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .info-panel {
+    display: flex;
+    justify-content: space-around;
+    margin: 15px 0 10px 0;
+    font-size: clamp(1em, 4vw, 1.3em);
+  }
+
+  .info-item {
     text-align: center;
-    font-size: clamp(0.9em, 3.5vw, 1.2em);
+  }
+
+  .info-label {
     color: #ffd700;
-    margin: 10px 0;
-    min-height: 30px;
+    font-size: 0.7em;
+  }
+
+  .info-value {
     font-weight: bold;
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    font-size: 1.2em;
   }
 
   .controls {
@@ -228,7 +244,6 @@
   @media (orientation: landscape) and (max-height: 600px) {
     .game-container {
       padding: 10px;
-      max-height: 100vh;
     }
 
     h1 {
@@ -245,6 +260,19 @@
       padding: 8px 15px;
       font-size: 0.9em;
     }
+
+    .card, .card-back {
+      height: 140px !important;
+      max-height: 140px !important;
+    }
+
+    .card-value, .card-value-bottom {
+      font-size: 1.4em;
+    }
+
+    .card-suit {
+      font-size: 2em;
+    }
   }
 
   @media (max-width: 350px) {
@@ -256,12 +284,17 @@
       gap: 3px;
     }
 
+    .card, .card-back {
+      height: 150px !important;
+      max-height: 150px !important;
+    }
+
     .card-value, .card-value-bottom {
-      font-size: 1.8em;
+      font-size: 1.5em;
     }
 
     .card-suit {
-      font-size: 2.8em;
+      font-size: 2.2em;
     }
   }
 </style>
@@ -272,32 +305,129 @@
 
     <div class="message" id="message">Place your bet and press DEAL!</div>
 
-    <div class="cards-container" id="dealerCards"></div>
-    <div class="cards-container" id="playerCards"></div>
-
-    <div class="info-panel">
-      <div class="info-item">
-        <div class="info-label">BALANCE</div>
-        <div class="info-value" id="balance">1000</div>
-      </div>
-      <div class="info-item">
-        <div class="info-label">BET</div>
-        <div class="info-value" id="bet">10</div>
-      </div>
+    <div class="cards-area">
+      <div class="cards-container" id="dealerCards"></div>
+      <div class="cards-container" id="playerCards"></div>
     </div>
 
-    <div class="controls">
-      <div class="bet-controls">
-        <button id="betMinus">-</button>
-        <button id="betPlus">+</button>
+    <div class="bottom-ui">
+      <div class="info-panel">
+        <div class="info-item">
+          <div class="info-label">BALANCE</div>
+          <div class="info-value" id="balance">1000</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">BET</div>
+          <div class="info-value" id="bet">10</div>
+        </div>
       </div>
-      <button id="dealButton">DEAL</button>
-      <button id="hitButton" disabled>HIT</button>
-      <button id="standButton" disabled>STAND</button>
+
+      <div class="controls">
+        <div class="bet-controls">
+          <button id="betMinus">-</button>
+          <button id="betPlus">+</button>
+        </div>
+        <button id="dealButton">DEAL</button>
+        <button id="hitButton" disabled>HIT</button>
+        <button id="standButton" disabled>STAND</button>
+      </div>
     </div>
   </div>
 
   <script>
+    // Audio Context for sound generation
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const audioCtx = new AudioContext();
+
+    // Sound functions
+    function playCardSound() {
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      oscillator.frequency.value = 400;
+      oscillator.type = 'sine';
+      
+      gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+      
+      oscillator.start(audioCtx.currentTime);
+      oscillator.stop(audioCtx.currentTime + 0.1);
+    }
+
+    function playWinSound() {
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(523, audioCtx.currentTime);
+      oscillator.frequency.setValueAtTime(659, audioCtx.currentTime + 0.1);
+      oscillator.frequency.setValueAtTime(784, audioCtx.currentTime + 0.2);
+      
+      gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+      
+      oscillator.start(audioCtx.currentTime);
+      oscillator.stop(audioCtx.currentTime + 0.4);
+    }
+
+    function playLoseSound() {
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      oscillator.type = 'sawtooth';
+      oscillator.frequency.setValueAtTime(300, audioCtx.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.3);
+      
+      gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+      
+      oscillator.start(audioCtx.currentTime);
+      oscillator.stop(audioCtx.currentTime + 0.3);
+    }
+
+    function playButtonSound() {
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      oscillator.frequency.value = 800;
+      oscillator.type = 'square';
+      
+      gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+      
+      oscillator.start(audioCtx.currentTime);
+      oscillator.stop(audioCtx.currentTime + 0.05);
+    }
+
+    function playChipSound() {
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      oscillator.frequency.value = 1000;
+      oscillator.type = 'sine';
+      
+      gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+      
+      oscillator.start(audioCtx.currentTime);
+      oscillator.stop(audioCtx.currentTime + 0.08);
+    }
+
     const suits = ['♠', '♥', '♦', '♣'];
     const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 
@@ -390,19 +520,42 @@
     function startRound() {
       if (bet > balance) {
         messageEl.textContent = 'Not enough balance!';
+        playLoseSound();
         return;
       }
+      playButtonSound();
       balance -= bet;
       playerHand = [];
       dealerHand = [];
       gameState = 'playerTurn';
       messageEl.textContent = 'Your turn: HIT or STAND';
       createDeck();
-      playerHand.push(deck.pop());
-      dealerHand.push(deck.pop());
-      playerHand.push(deck.pop());
-      dealerHand.push(deck.pop());
-      updateUI();
+      
+      // Deal cards with sound
+      setTimeout(() => {
+        playerHand.push(deck.pop());
+        playCardSound();
+        updateUI();
+      }, 100);
+      
+      setTimeout(() => {
+        dealerHand.push(deck.pop());
+        playCardSound();
+        updateUI();
+      }, 300);
+      
+      setTimeout(() => {
+        playerHand.push(deck.pop());
+        playCardSound();
+        updateUI();
+      }, 500);
+      
+      setTimeout(() => {
+        dealerHand.push(deck.pop());
+        playCardSound();
+        updateUI();
+      }, 700);
+      
       dealButton.disabled = true;
       hitButton.disabled = false;
       standButton.disabled = false;
@@ -412,7 +565,9 @@
 
     function playerHit() {
       if (gameState !== 'playerTurn') return;
+      playButtonSound();
       playerHand.push(deck.pop());
+      playCardSound();
       updateUI();
       const playerValue = calculateHandValue(playerHand);
       if (playerValue > 21) {
@@ -422,6 +577,7 @@
 
     function playerStand() {
       if (gameState !== 'playerTurn') return;
+      playButtonSound();
       gameState = 'dealerTurn';
       messageEl.textContent = 'Dealer is playing...';
       hitButton.disabled = true;
@@ -430,13 +586,48 @@
     }
 
     function dealerPlay() {
+      updateUI();
+      
+      let cardsToAdd = [];
       let dealerValue = calculateHandValue(dealerHand);
+      
+      // Calculate all cards dealer needs to draw
       while (dealerValue < 17) {
-        dealerHand.push(deck.pop());
+        const newCard = deck.pop();
+        cardsToAdd.push(newCard);
+        dealerHand.push(newCard);
         dealerValue = calculateHandValue(dealerHand);
       }
-      updateUI();
-      determineWinner();
+      
+      // Remove the cards we just added for animation
+      for (let i = 0; i < cardsToAdd.length; i++) {
+        dealerHand.pop();
+      }
+      
+      // Add them back one by one with animation
+      let delay = 0;
+      cardsToAdd.forEach((card, index) => {
+        setTimeout(() => {
+          dealerHand.push(card);
+          playCardSound();
+          updateUI();
+          
+          // After last card, determine winner
+          if (index === cardsToAdd.length - 1) {
+            setTimeout(() => {
+              determineWinner();
+            }, 500);
+          }
+        }, delay);
+        delay += 500;
+      });
+      
+      // If dealer doesn't need to draw, determine winner immediately
+      if (cardsToAdd.length === 0) {
+        setTimeout(() => {
+          determineWinner();
+        }, 500);
+      }
     }
 
     function determineWinner() {
@@ -444,17 +635,20 @@
       const dealerValue = calculateHandValue(dealerHand);
       if (dealerValue > 21 || playerValue > dealerValue) {
         balance += bet * 2;
+        playWinSound();
         endRound('You win!');
       } else if (playerValue === dealerValue) {
         balance += bet;
+        playButtonSound();
         endRound('Push. It\'s a tie.');
       } else {
+        playLoseSound();
         endRound('Dealer wins. You lose.');
       }
     }
 
     function endRound(message) {
-      gameState = 'roundOver';
+      gameState = 'betting';
       messageEl.textContent = message;
       dealButton.disabled = false;
       hitButton.disabled = true;
@@ -465,21 +659,23 @@
     }
 
     betMinus.addEventListener('click', () => {
-      if (gameState === 'betting' && bet > 1) {
-        bet--;
+      if (gameState === 'betting' && bet > 10) {
+        bet -= 10;
         betEl.textContent = bet;
+        playChipSound();
       }
     });
 
     betPlus.addEventListener('click', () => {
       if (gameState === 'betting' && bet < balance) {
-        bet++;
+        bet += 10;
         betEl.textContent = bet;
+        playChipSound();
       }
     });
 
     dealButton.addEventListener('click', () => {
-      if (gameState === 'betting' || gameState === 'roundOver') {
+      if (gameState === 'betting') {
         startRound();
       }
     });
