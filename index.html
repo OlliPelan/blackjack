@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
-<title>Blackjack Game 1.0 No Header</title>
+<title>Blackjack Game 4.0 Custom Background</title>
 <style>
   * {
     margin: 0;
@@ -19,7 +19,7 @@
     overflow: hidden;
     position: fixed;
     font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    background: url('https://cdn.abacus.ai/images/8e6fb0c5-62b3-4097-b0c4-a381fc1f3bb8.png') center center / cover no-repeat;
     color: white;
     touch-action: manipulation;
     display: flex;
@@ -28,10 +28,9 @@
   }
 
   .game-container {
-    background: rgba(0, 0, 0, 0.7);
+    background: transparent;
     border-radius: 15px;
     padding: 15px;
-    box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
     width: 100%;
     max-width: 600px;
     height: 100vh;
@@ -45,7 +44,7 @@
     text-align: center;
     font-size: clamp(0.9em, 3.5vw, 1.2em);
     color: #ffd700;
-    margin: 10px 0;
+    margin: 60px 0 10px 0;
     min-height: 30px;
     font-weight: bold;
     text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
